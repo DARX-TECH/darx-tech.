@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html land="en">
+  <head>
+    <meta charset="UTF-8" />
+    <titLe>DARX SUPPORT</titLe>
+    <style>
+      body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(-45eg, #0f2027, #203a43, #2c5364, #0f2027);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  color: white;
+}
+
+@keyframes gradient {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+form {
+  background: rgba(0, 0, 0, 0.7);
+  padding:20px;
+  border-radius: 10px;
+  width: 90px;
+  max-width: 400px;
+  box-shadow: 0 0 10px rgba(0,0,0,06);
+}
+
+input, textarea, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+input, textarea {
+  background: #66fcf1;
+  color: #000;
+}
+
+button {
+  background: #66fcf1;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.channel-btn a {
+  color: #66fcf1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #66fcf1;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  size: 500px;
+  position: fixed;
+}
+
+footer {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 0.9em;
+  color: #aaa;
+  background: black;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+}
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "IzaSyDIUxhVljm56kHtjyyYf_jlAw9nCh3NfWw",
+    authDomain: "complaintapp-88900.firebaseapp.com",
+    projectId: "complaintapp-88900",
+    storageBucket: "complaintapp-88900.firebasestorage.app",
+    messagingSenderId: "961770777137",
+    appId: "1:961770777137:web:4f614a48baa382c1ab8310"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+<script>
+  document.getElementById('complaintForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value;
+  const complaint = document.getElementById('complaint').value;
+
+  // Store in Firebase
+  database.ref('complaints').push({
+    email: email,
+    complaint: complaint,
+    timestamp: new Date().toISOString()
+  });
+
+  // Send to IFTTT
+  fetch('https://maker.ifttt.com/trigger/new_complaint/with/key/https://ift.tt/nfU3LPN', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      value1: email,
+      value2: complaint
+    })
+  });
+
+  alert('Your message has been sent!');
+  document.getElementById('complaintForm').reset();
+});
+
+</script>
+  </head>
+  <body>
+    <header>
+      <h1>DARX SUPPORT</h1>
+    </header>
+    <form action="send.php" method="POST">
+      <h2>Input Your Complaint</h2>
+      <input type="email" name="email"
+       placeholder="Your Email"required/>
+       <textarea name="complaint" rows="5"
+       placeholder="Your Complaint" required></textarea>
+       <button type="submit">Send</button>
+       <div class="channel-btn">
+        <a href="https://whatsapp.com/channel/0029VbB2sQyISTkHzyZfDm2h"
+        target="_blank">Visit Our Channel</a>
+       </div>
+    </form>
+    <script>
+      document.querySelector("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+        const email = document.querySelector('input[name="email"]').value;
+        const complaint = document.querySelector('textarea[name="complaint"]').value;
+    
+        db.collection("complaints").add({ email, complaint, timestamp: new Date() })
+          .then(() => {
+            alert("Your complaint has been submitted!");
+            document.querySelector("form").reset();
+          })
+          .catch(err => {
+            alert("Error sending complaint.");
+            console.error(err);
+          });
+      });
+    </script>
+    <footer>
+      <p>&copy; 2025 DarxTech. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
